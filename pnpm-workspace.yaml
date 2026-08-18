@@ -1,0 +1,4 @@
+# esbuild's install script only fetches/verifies its platform binary; vitest
+# (via vite) needs it. Approved so `pnpm install` works out of the box.
+allowBuilds:
+  esbuild: true

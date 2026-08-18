@@ -1,0 +1,34 @@
+/*
+ * The wallpaper layer. Global selectors on purpose: there is no slot below
+ * the app's content (shell.overlay sits ABOVE it at z-index 20), so the layer
+ * is a body pseudo-element sitting between the body's own background paint
+ * and the #root content.
+ *
+ * `isolation: isolate` makes body a stacking context so `z-index: -1` places
+ * the layer above body's translucent background but below every child —
+ * without it the pseudo-element would paint UNDER body's background in the
+ * root stacking context.
+ *
+ * Inert by construction when no wallpaper is active: every property reads a
+ * `--dsh-avatar-*` custom property with an invisible fallback, and those
+ * properties only exist while the theme override layer is applied.
+ */
+
+body {
+  isolation: isolate;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  /* Expanded by the blur radius so the blurred edge never vignettes inward. */
+  inset: calc(-2 * var(--dsh-avatar-blur, 0px));
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--dsh-avatar-canvas, transparent);
+  background-image: var(--dsh-avatar-image, none);
+  background-size: var(--dsh-avatar-size, cover);
+  background-repeat: var(--dsh-avatar-repeat, no-repeat);
+  background-position: center;
+  filter: blur(var(--dsh-avatar-blur, 0px));
+}
